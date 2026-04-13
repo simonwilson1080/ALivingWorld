@@ -1,8 +1,10 @@
 package Entities;
 
 import Definitions.Creature;
+import Definitions.Territory;
+import Definitions.MargCitizenship;
 
-public class Margartian extends Creature {
+public class Margartian extends Creature implements MargCitizenship {
 
     int speed = 4;
 
