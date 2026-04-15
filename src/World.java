@@ -21,18 +21,27 @@ public class World {
 
     private Territory[][] map = new Territory[50][50];
     private List<Creature> creatures;
+    private final Random random = new Random();
+    private final List<Supplier<Creature>> types;
 
-    public World(int n) {
-        Random r = new Random();
-        List<Supplier<Creature>> types = Arrays.asList(
-            () -> new Simonite(getRandomName(), r.nextInt(3), r.nextInt(50), r.nextInt(50)),
-            () -> new Margartian(getRandomname(), r.nextInt(3), r.nextInt(50), r.nextInt(50)),
+    public World(int n) throws IOException {
+        creatures = new ArrayList<>();
+        types = Arrays.asList(
+            () -> new Simonite(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50)),
+            () -> new Margartian(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50))
         );
+
+        for (int i = 0; i < n; i++) {
+            creatures.add(createCreature());
+        }
     }
 
-    public String getRandomName() throws IOException{
+    public Creature createCreature() {
+        
+    }
 
-        ArrayList names = new ArrayList<>();
+    public String getRandomName() throws IOException {
+        ArrayList<Object> names = new ArrayList<>();
         BufferedReader reader = null;
         try {
             reader = new BufferedReader(new FileReader("./names.txt"));
@@ -40,10 +49,10 @@ public class World {
             while((line = reader.readLine()) != null) {
                 names.add(line);
             }
-        } 
+        }
         catch (IOException e) {System.out.println(e);}
         finally {if(reader != null) reader.close();}
-
+        
         Random random = new Random();
         return (String) names.get(random.nextInt(names.size()-1));
     }
