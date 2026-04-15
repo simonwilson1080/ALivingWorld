@@ -9,7 +9,7 @@ public class Creature {
     int size;
     Color color;
 
-    public Creature(String name, int size, int x, int y) {
+    public Creature(String name, int size, Color color, int x, int y) {
         this.gridX = x;
         this.gridY = y;
         this.name = name;
