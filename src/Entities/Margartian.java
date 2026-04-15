@@ -11,5 +11,11 @@ public class Margartian extends Creature implements MargCitizenship {
     public Margartian(String name, int size, int x, int y) {
         super(name, size, x, y);
     }
+
+    @Override
+    public void Marg(Territory[][] map) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'Marg'");
+    }
     
 }
