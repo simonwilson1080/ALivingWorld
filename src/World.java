@@ -1,7 +1,12 @@
+import javax.swing.*;
+import javax.swing.Timer;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+import java.awt.*;
+import java.util.*;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.ArrayList;
@@ -17,28 +22,72 @@ import Entities.Simonite;
 import Entities.Margartian;
 
 
-public class World {
+public class World extends JPanel{
 
-    private Territory[][] map = new Territory[50][50];
+    private final int GRID_COUNT = 50;
+    private final int CELL_SIZE = 15;
+    private Territory[][] map = new Territory[GRID_COUNT][GRID_COUNT];
     private List<Creature> creatures;
     private final Random random = new Random();
-    private final List<Supplier<Creature>> types;
 
-    public World(int n) throws IOException {
-        creatures = new ArrayList<>();
-        types = Arrays.asList(
+    public World(int n) {
+        setBackground(new Color(20, 20, 30));
+        generateMap();
+
+        Random random = new Random();
+        List<Supplier<Creature>> species = Arrays.asList(
             () -> new Simonite(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50)),
             () -> new Margartian(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50))
         );
 
-        for (int i = 0; i < n; i++) {
-            creatures.add(createCreature());
+        creatures = new ArrayList<>();
+        for(int i = 0; i < n; i++) creatures.add(species.get(random.nextInt(species.size())).get());
+        
+        new Timer(200, e -> {
+            for(Creature creature:creatures) {
+                if(creature instanceof MargCitizenship) {
+                    ((MargCitizenship) creature).Marg(map);
+                }
+                if(creature instanceof SimCitizenship) {
+                    ((SimCitizenship) creature).Sim(map);
+                }
+            }
+            repaint();
+        }).start();
+    }
+
+    private void generateMap() {
+        for(int x = 0; x < GRID_COUNT; x++) {
+            for(int y = 0; y < GRID_COUNT; y++) {
+                // Assign territory to corners 10x10 starting with top left
+                // The rest of the map is unclaimed
+                if(x < 10 && y < 10) map[x][y] = Territory.MargartainTerritory;
+                else if(x > 39 && y > 39) map[x][y] = Territory.SimoniteTerritory;
+                else map[x][y] = Territory.Unclaimed;
+            }
         }
     }
 
-    public Creature createCreature() {
-        
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        for(int x = 0; x < GRID_COUNT; x++) {
+            for(int y = 0; y < GRID_COUNT; y++) {
+                switch(map[x][y]) {
+                    case MargartainTerritory -> g.setColor(new Color(100, 41, 38));
+                    case SimoniteTerritory -> g.setColor(new Color(47, 87, 47));
+                    case Unclaimed -> g.setColor(new Color(84, 84, 84));
+                }
+                g.fillRect(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                g.setColor(new Color(60, 60, 80));
+                g.drawRect(x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+        }
+        for (Creature c : creatures) c.draw(g);
     }
+
+    // public Creature createCreature() {
+        
+    // }
 
     public String getRandomName() throws IOException {
         ArrayList<Object> names = new ArrayList<>();
@@ -56,7 +105,13 @@ public class World {
         Random random = new Random();
         return (String) names.get(random.nextInt(names.size()-1));
     }
+
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+        JFrame f = new JFrame("A Living World: The 4 Corners");
+        f.add(new World(200));
+        f.pack();
+        f.setSize(765, 800);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setVisible(true);
     }
 }
