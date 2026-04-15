@@ -52,7 +52,7 @@ public class World {
         }
         catch (IOException e) {System.out.println(e);}
         finally {if(reader != null) reader.close();}
-        
+
         Random random = new Random();
         return (String) names.get(random.nextInt(names.size()-1));
     }
