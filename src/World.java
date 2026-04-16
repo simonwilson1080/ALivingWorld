@@ -76,9 +76,9 @@ public class World extends JPanel{
         String rName = getRandomName();
 
         if (random.nextBoolean()) {
-            return new Simonite("Simon", random.nextInt(3), Color.GREEN, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
+            return new Simonite(rName, random.nextInt(3), Color.GREEN, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
         } else {
-            return new Margartian("Margaret", random.nextInt(3), Color.RED, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
+            return new Margartian(rName, random.nextInt(3), Color.RED, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
         }
     }
 
