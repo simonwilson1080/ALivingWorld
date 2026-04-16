@@ -73,7 +73,7 @@ public class World extends JPanel{
 
     public Creature createCreature() throws IOException {
 
-        //String rName = getRandomName();
+        String rName = getRandomName();
 
         if (random.nextBoolean()) {
             return new Simonite("Simon", random.nextInt(3), Color.GREEN, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
@@ -103,16 +103,25 @@ public class World extends JPanel{
 
     public static void main(String[] args) throws Exception {
 
+        Random random = new Random();
+
         JFrame f = new JFrame("A Living World: The 4 Corners");
         World world = new World(100);
-        for (int i = 0; i < 50; i++) {
-            world.creatures.add(world.createCreature());
-        }
-
         f.add(world);
         f.pack();
         f.setSize(765, 800);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
+
+        for (int i = 0; i < 50; i++) world.creatures.add(world.createCreature());
+
+        while(world.creatures.size() > 0) {
+            if (random.nextInt(10) == 0) {
+                world.creatures.remove(world.random.nextInt(world.creatures.size()));
+            }
+            if (random.nextInt(15) == 0) {
+                world.creatures.add(world.createCreature());
+            }
+        }
     }
 }
