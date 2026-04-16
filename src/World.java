@@ -31,35 +31,18 @@ public class World extends JPanel{
     private final Random random = new Random();
 
     public World(int n) {
+
         setBackground(new Color(20, 20, 30));
         generateMap();
-
-        Random random = new Random();
-        List<Supplier<Creature>> species = Arrays.asList(
-            () -> new Simonite(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50)),
-            () -> new Margartian(getRandomName(), random.nextInt(3), random.nextInt(50), random.nextInt(50))
-        );
-
         creatures = new ArrayList<>();
-        for(int i = 0; i < n; i++) creatures.add(species.get(random.nextInt(species.size())).get());
-        
-        new Timer(200, e -> {
-            for(Creature creature:creatures) {
-                if(creature instanceof MargCitizenship) {
-                    ((MargCitizenship) creature).Marg(map);
-                }
-                if(creature instanceof SimCitizenship) {
-                    ((SimCitizenship) creature).Sim(map);
-                }
-            }
-            repaint();
-        }).start();
     }
 
+
     private void generateMap() {
+
         for(int x = 0; x < GRID_COUNT; x++) {
             for(int y = 0; y < GRID_COUNT; y++) {
-                // Assign territory to corners 10x10 starting with top left
+                // Assign territory to corners 10x10
                 // The rest of the map is unclaimed
                 if(x < 10 && y < 10) map[x][y] = Territory.MargartainTerritory;
                 else if(x > 39 && y > 39) map[x][y] = Territory.SimoniteTerritory;
@@ -68,7 +51,9 @@ public class World extends JPanel{
         }
     }
 
+
     protected void paintComponent(Graphics g) {
+
         super.paintComponent(g);
         for(int x = 0; x < GRID_COUNT; x++) {
             for(int y = 0; y < GRID_COUNT; y++) {
@@ -85,11 +70,21 @@ public class World extends JPanel{
         for (Creature c : creatures) c.draw(g);
     }
 
-    // public Creature createCreature() {
-        
-    // }
+
+    public Creature createCreature() throws IOException {
+
+        //String rName = getRandomName();
+
+        if (random.nextBoolean()) {
+            return new Simonite("Simon", random.nextInt(3), Color.GREEN, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
+        } else {
+            return new Margartian("Margaret", random.nextInt(3), Color.RED, random.nextInt(GRID_COUNT), random.nextInt(GRID_COUNT));
+        }
+    }
+
 
     public String getRandomName() throws IOException {
+
         ArrayList<Object> names = new ArrayList<>();
         BufferedReader reader = null;
         try {
@@ -107,8 +102,14 @@ public class World extends JPanel{
     }
 
     public static void main(String[] args) throws Exception {
+
         JFrame f = new JFrame("A Living World: The 4 Corners");
-        f.add(new World(200));
+        World world = new World(100);
+        for (int i = 0; i < 50; i++) {
+            world.creatures.add(world.createCreature());
+        }
+
+        f.add(world);
         f.pack();
         f.setSize(765, 800);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
